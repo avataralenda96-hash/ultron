@@ -163,10 +163,10 @@ function pedir(i) {
     const hora = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
     if (c.ocup < c.cap) {
       const livres = c.cap - c.ocup;
-      $('resNegTxt').textContent = `Ainda existe espaço na rua original de ${c.id}. Você é obrigado a usar as ${livres} posição(ões) restantes antes de abrir uma híbrida.`;
+      $('resNegTxt').textContent = `Ainda existe espaço na rua original de ${c.id}. Você é obrigado a usar as ${livres} ${livres === 1 ? 'posição restante' : 'posições restantes'} antes de abrir uma híbrida.`;
       $('resNegDet').textContent = `WMS: ${c.ocup}/${c.cap} ocupadas | ${livres} livres`;
       $('resNeg').style.display = 'block';
-      pedidos.unshift({ canal:c.id, hora, autor:'VOCÊ (DEMO)', tipo:'neg', txt:`Rua ${c.ocup}/${c.cap}. Negada: usar as ${livres} posições livres.` });
+      pedidos.unshift({ canal:c.id, hora, autor:'VOCÊ (DEMO)', tipo:'neg', txt:`Rua ${c.ocup}/${c.cap}. Negada: usar as ${livres} ${livres === 1 ? 'posição livre' : 'posições livres'}.` });
     } else {
       const rua = RUAS_VAZIAS[Math.floor(Math.random() * RUAS_VAZIAS.length)];
       $('resOkTxt').textContent = `Rua de ${c.id} cheia (${c.cap}/${c.cap}). Híbrida liberada na ${rua}. Pode armazenar os paletes de ${c.id} lá.`;
