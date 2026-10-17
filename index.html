@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#2D3250"/>
+<link rel="manifest" href="manifest.json"/>
+<title>ULTRON — Ruas Híbridas</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Segoe UI', system-ui, sans-serif; background:#0B1020; color:#fff; max-width:460px; margin:0 auto; min-height:100vh; padding-bottom:90px; }
+header { background:linear-gradient(135deg,#2D3250,#0B1020); padding:26px 20px 18px; border-bottom:3px solid #FFE600; position:sticky; top:0; z-index:10; }
+header .top { display:flex; align-items:center; gap:12px; }
+header .robo { font-size:2.2em; }
+header h1 { font-size:1.5em; font-weight:900; letter-spacing:1px; }
+header p { font-size:.75em; color:#9fb0d0; margin-top:2px; letter-spacing:2px; }
+.badge-demo { display:inline-block; background:#FFE600; color:#2D3250; font-size:.68em; font-weight:900; padding:5px 12px; border-radius:20px; margin-top:8px; letter-spacing:.5px; }
+main { padding:18px 16px; }
+.card { background:#161D38; border:1px solid #26305A; border-radius:18px; padding:18px; margin-bottom:14px; }
+.sec-t { font-size:.72em; font-weight:900; letter-spacing:2px; color:#7C8DB5; margin:6px 2px 12px; }
+.rua { display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; }
+.rua .nome { font-weight:900; font-size:1.15em; }
+.rua .ocup { font-size:.78em; color:#9fb0d0; margin-top:3px; }
+.barra { height:8px; background:#26305A; border-radius:6px; margin-top:8px; overflow:hidden; }
+.barra i { display:block; height:100%; border-radius:6px; background:#7CD4FF; }
+.barra i.cheia { background:#FF6B6B; }
+.rua .seta { color:#7C8DB5; font-size:1.4em; }
+.btn { width:100%; border:none; border-radius:16px; padding:16px; font-size:1.05em; font-weight:900; cursor:pointer; margin-top:10px; letter-spacing:.5px; }
+.btn-amarelo { background:#FFE600; color:#2D3250; }
+.btn-cinza { background:#26305A; color:#C9D6F2; }
+.res { border-radius:18px; padding:20px; margin-top:14px; display:none; }
+.res.negada { background:rgba(255,107,107,.12); border:1px solid #FF6B6B; }
+.res.aberta { background:rgba(61,220,132,.1); border:1px solid #3CDC84; }
+.res h3 { font-size:1.15em; font-weight:900; margin-bottom:8px; }
+.res.negada h3 { color:#FF9E9E; } .res.aberta h3 { color:#7BEFB2; }
+.res p { font-size:.95em; line-height:1.55; color:#E8EEFB; }
+.res .det { margin-top:10px; background:rgba(0,0,0,.25); border-radius:10px; padding:10px; font-family:monospace; font-size:.82em; color:#BFE3FF; }
+.pensando { text-align:center; padding:22px; display:none; }
+.pensando .olho { font-size:2.6em; animation:piscar 1s infinite; }
+@keyframes piscar { 50% { opacity:.3; } }
+.pensando p { margin-top:10px; color:#9fb0d0; font-size:.9em; }
+.hist-item { border-left:4px solid #FFE600; background:#161D38; border-radius:12px; padding:12px 14px; margin-bottom:10px; font-size:.85em; }
+.hist-item .l1 { display:flex; justify-content:space-between; font-weight:900; }
+.hist-item .l1 .h { color:#7C8DB5; font-weight:700; }
+.hist-item .l2 { color:#9fb0d0; margin-top:4px; line-height:1.5; }
+.hist-item.neg { border-left-color:#FF6B6B; }
+.hist-item.ok { border-left-color:#3CDC84; }
+.vazio { text-align:center; color:#7C8DB5; padding:30px; font-size:.9em; }
+nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:460px; background:#12172E; border-top:1px solid #26305A; display:flex; z-index:20; }
+nav button { flex:1; background:none; border:none; color:#7C8DB5; padding:12px 0 16px; font-size:.72em; font-weight:800; letter-spacing:.5px; cursor:pointer; }
+nav button .ic { display:block; font-size:1.6em; margin-bottom:3px; }
+nav button.on { color:#FFE600; }
+.passo { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; font-size:.9em; line-height:1.5; color:#C9D6F2; }
+.passo b { color:#fff; }
+.passo .n { background:#FFE600; color:#2D3250; font-weight:900; min-width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.75em; }
+h2 { font-size:1.05em; margin:8px 0 14px; letter-spacing:.5px; }
+footer { text-align:center; color:#4A5680; font-size:.7em; padding:20px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><span class="robo">🤖</span>
+    <div><h1>ULTRON</h1><p>RUAS HÍBRIDAS • MERCADO LIVRE</p></div>
+  </div>
+  <span class="badge-demo">⚡ MODO DEMONSTRAÇÃO — WMS SIMULADO</span>
+</header>
+
+<main id="tela-pedir">
+  <p class="sec-t">CANALIZAÇÕES — TOQUE PARA PEDIR HÍBRIDA</p>
+  <div id="lista"></div>
+
+  <div class="pensando" id="pensando"><div class="olho">🤖</div><p>ULTRON analisando o WMS...</p></div>
+
+  <div class="res negada" id="resNeg">
+    <h3>🚫 HÍBRIDA NEGADA</h3>
+    <p id="resNegTxt"></p>
+    <div class="det" id="resNegDet"></div>
+  </div>
+  <div class="res aberta" id="resOk">
+    <h3>✅ HÍBRIDA ABERTA</h3>
+    <p id="resOkTxt"></p>
+    <div class="det" id="resOkDet"></div>
+  </div>
+  <button class="btn btn-cinza" id="btnVoltar" style="display:none" onclick="voltar()">← Voltar</button>
+</main>
+
+<main id="tela-hist" style="display:none">
+  <p class="sec-t">HISTÓRICO DE DECISÕES</p>
+  <div id="histLista"></div>
+</main>
+
+<main id="tela-sobre" style="display:none">
+  <p class="sec-t">COMO O APP FUNCIONA</p>
+  <div class="card">
+    <h2>Do pedido à resposta</h2>
+    <div class="passo"><span class="n">1</span><span>O colaborador abre o <b>Ultron</b> (ícone na tela do celular) e escolhe a canalização</span></div>
+    <div class="passo"><span class="n">2</span><span>O Ultron <b>consulta as ruas no WMS</b> em tempo real</span></div>
+    <div class="passo"><span class="n">3</span><span>Se a rua original tem espaço: <b>negada</b>, com o motivo e as posições livres</span></div>
+    <div class="passo"><span class="n">4</span><span>Rua cheia: <b>híbrida aberta</b> numa rua vazia da armazenagem</span></div>
+  </div>
+  <div class="card">
+    <h2>Instalar como aplicativo</h2>
+    <div class="passo"><span class="n">1</span><span>Abra este link no <b>Chrome do celular</b></span></div>
+    <div class="passo"><span class="n">2</span><span>Toque no <b>menu ⋮</b> (canto superior direito)</span></div>
+    <div class="passo"><span class="n">3</span><span><b>"Adicionar à tela inicial"</b> → confirmar</span></div>
+    <div class="passo"><span class="n">4</span><span>O <b>Ultron vira um app</b> com ícone próprio, tela cheia, sem barra de navegador</span></div>
+  </div>
+  <div class="card">
+    <h2>Regras do cérebro</h2>
+    <div class="passo"><span class="n">•</span><span>Híbrida só abre se a rua original estiver <b>100% cheia</b></span></div>
+    <div class="passo"><span class="n">•</span><span>Rua escolhida: qualquer <b>rua vazia</b> (0 paletes) da armazenagem, posição existente no sistema</span></div>
+    <div class="passo"><span class="n">•</span><span>Toda decisão fica no <b>histórico</b> com número do sistema, hora e autor</span></div>
+  </div>
+  <footer>ULTRON • Protótipo de demonstração • Sem ligação com qualquer outro sistema</footer>
+</main>
+
+<nav>
+  <button class="on" onclick="aba('pedir',this)"><span class="ic">🤖</span>PEDIR</button>
+  <button onclick="aba('hist',this)"><span class="ic">📜</span>HISTÓRICO</button>
+  <button onclick="aba('sobre',this)"><span class="ic">ℹ️</span>SOBRE</button>
+</nav>
+
+<script>
+// ===== WMS SIMULADO (demonstração) =====
+const CANALIZACOES = [
+  { id:'SSP55', cap:20, ocup:20 },   // cheia -> abre híbrida
+  { id:'SSP12', cap:62, ocup:41 },   // tem espaço -> negada
+  { id:'BA30-2', cap:30, ocup:30 },   // cheia -> abre híbrida
+  { id:'MELI45', cap:48, ocup:33 },   // tem espaço -> negada
+  { id:'MELI62', cap:52, ocup:52 }    // cheia -> abre híbrida
+];
+const RUAS_VAZIAS = ['BA30-4 (28 posições)', 'SSP07 (36 posições)', 'BA29-1 (30 posições)'];
+let pedidos = JSON.parse(localStorage.getItem('ultron_hist') || '[]');
+if (!pedidos.length) {
+  pedidos = [
+    { canal:'MELI18', hora:'14:32', autor:'CARLOS (OPS 2)', tipo:'ok', txt:'Rua original 52/52. Híbrida aberta na BA31-3.' },
+    { canal:'SSP33', hora:'11:07', autor:'AMARO (OPS 2)', tipo:'neg', txt:'Rua original 30 posições, 26 ocupadas. Direcionado a usar as 4 livres restantes.' }
+  ];
+  localStorage.setItem('ultron_hist', JSON.stringify(pedidos));
+}
+
+const $ = id => document.getElementById(id);
+function renderLista() {
+  $('lista').innerHTML = CANALIZACOES.map((c, i) => {
+    const pct = Math.round(c.ocup / c.cap * 100);
+    const cheia = c.ocup >= c.cap;
+    return `<div class="card rua" onclick="pedir(${i})">
+      <div><div class="nome">${c.id}</div>
+      <div class="ocup">${c.ocup} de ${c.cap} posições • ${cheia ? 'CHEIA' : pct + '% ocupada'}</div>
+      <div class="barra"><i class="${cheia ? 'cheia' : ''}" style="width:${pct}%"></i></div></div>
+      <span class="seta">›</span>
+    </div>`;
+  }).join('');
+}
+function pedir(i) {
+  const c = CANALIZACOES[i];
+  $('lista').style.display = 'none';
+  $('pensando').style.display = 'block';
+  $('resNeg').style.display = 'none'; $('resOk').style.display = 'none';
+  $('btnVoltar').style.display = 'none';
+  setTimeout(() => {
+    $('pensando').style.display = 'none';
+    const hora = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    if (c.ocup < c.cap) {
+      const livres = c.cap - c.ocup;
+      $('resNegTxt').textContent = `Ainda existe espaço na rua original de ${c.id}. Você é obrigado a usar as ${livres} posição(ões) restantes antes de abrir uma híbrida.`;
+      $('resNegDet').textContent = `WMS: ${c.ocup}/${c.cap} ocupadas | ${livres} livres`;
+      $('resNeg').style.display = 'block';
+      pedidos.unshift({ canal:c.id, hora, autor:'VOCÊ (DEMO)', tipo:'neg', txt:`Rua ${c.ocup}/${c.cap}. Negada: usar as ${livres} posições livres.` });
+    } else {
+      const rua = RUAS_VAZIAS[Math.floor(Math.random() * RUAS_VAZIAS.length)];
+      $('resOkTxt').textContent = `Rua de ${c.id} cheia (${c.cap}/${c.cap}). Híbrida liberada na ${rua}. Pode armazenar os paletes de ${c.id} lá.`;
+      $('resOkDet').textContent = `WMS: ${c.ocup}/${c.cap} ocupadas | Híbrida: ${rua} | Registrado no histórico`;
+      $('resOk').style.display = 'block';
+      pedidos.unshift({ canal:c.id, hora, autor:'VOCÊ (DEMO)', tipo:'ok', txt:`Rua ${c.ocup}/${c.cap} cheia. Híbrida aberta na ${rua}.` });
+    }
+    localStorage.setItem('ultron_hist', JSON.stringify(pedidos));
+    $('btnVoltar').style.display = 'block';
+  }, 1600);
+}
+function voltar() { $('lista').style.display='block'; $('resNeg').style.display='none'; $('resOk').style.display='none'; $('btnVoltar').style.display='none'; renderLista(); renderHist(); }
+function renderHist() {
+  $('histLista').innerHTML = pedidos.length
+    ? pedidos.slice(0, 30).map(p => `<div class="hist-item ${p.tipo}"><div class="l1"><span>${p.canal} — ${p.tipo === 'ok' ? 'HÍBRIDA ABERTA' : 'NEGADA'}</span><span class="h">${p.hora}</span></div><div class="l2">${p.txt}<br/>Solicitante: ${p.autor}</div></div>`).join('')
+    : '<div class="vazio">Sem pedidos ainda</div>';
+}
+function aba(nome, btn) {
+  ['pedir','hist','sobre'].forEach(t => $('tela-'+t).style.display = t === nome ? 'block' : 'none');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  if (nome === 'hist') renderHist();
+}
+renderLista();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
