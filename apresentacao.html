@@ -111,7 +111,7 @@ ol.passos li::before { content:counter(p); min-width:34px; height:34px; border-r
   <h2 class="titulo">A Nova Forma de Operar: o App Ultron</h2>
   <div class="grid3">
     <div class="card topamarelo"><span class="ico">📱</span><h3>Um ícone no celular</h3><p>O Ultron instala como <b>aplicativo</b> na tela inicial de qualquer celular do galpão. Um toque e abre.</p></div>
-    <div class="card topamarelo"><span class="ico">📊</span><h3>Ocupação na tela</h3><p>Ao abrir, o operador vê <b>todas as canalizações</b> com ocupação, capacidade e selo CHEIA/% em tempo real.</p></div>
+    <div class="card topamarelo"><span class="ico">📊</span><h3>Ocupação na tela</h3><p>Ao abrir, o operador vê <b>todas as canalizações</b> com CPT, cor, endereço na armazenagem (BAIO) e selo CHEIA/% em tempo real.</p></div>
     <div class="card topamarelo"><span class="ico">⚖️</span><h3>Laudo na hora</h3><p>O Ultron consulta o <b>WMS</b>, aplica as regras e entrega o laudo <b>na própria tela</b>: negada ou autorizada, sempre com os números.</p></div>
   </div>
   <p style="margin-top:22px">Nenhuma mensagem é trocada. O app conversa direto com o sistema e devolve a decisão <span class="dest">para quem precisa executar</span>.</p>
@@ -122,7 +122,7 @@ ol.passos li::before { content:counter(p); min-width:34px; height:34px; border-r
   <h2 class="titulo">Como Funciona na Prática</h2>
   <div class="timeline">
     <div class="etapa"><div class="bola"></div><div class="card"><h3>1. Abrir o app</h3><p>Operador toca no <b>ícone do Ultron</b> na tela do celular.</p></div></div>
-    <div class="etapa"><div class="bola"></div><div class="card"><h3>2. Selecionar</h3><p>Escolhe a canalização (ex: <b>SSP55</b>) e vê o dossiê: ocupadas, capacidade e livres.</p></div></div>
+    <div class="etapa"><div class="bola"></div><div class="card"><h3>2. Selecionar</h3><p>Escolhe a canalização (ex.: <b>SSPP4.rL</b>) e vê o dossiê: CPT, cor, docas, armazenagem (BAIO), ocupadas, capacidade e livres.</p></div></div>
     <div class="etapa"><div class="bola"></div><div class="card"><h3>3. Análise</h3><p>Um toque em <b>"Solicitar Análise"</b>: o Ultron consulta o WMS.</p></div></div>
     <div class="etapa"><div class="bola"></div><div class="card"><h3>4. Laudo</h3><p>A resposta formal <b>na tela</b>: híbrida negada ou autorizada, com o endereço liberado.</p></div></div>
   </div>
@@ -134,13 +134,13 @@ ol.passos li::before { content:counter(p); min-width:34px; height:34px; border-r
   <div class="grid2">
     <div class="card" style="border-top:5px solid #EF4444">
       <h3>🚫 Híbrida Negada</h3>
-      <p>O WMS mostra espaço na rua original (ex: <b>41 de 62 posições</b>). O laudo informa as <b>21 posições livres</b> e orienta utilizá-las integralmente antes de liberar híbrida.</p>
-      <p style="margin-top:10px; font-family:monospace; font-size:.85em; background:#0F172A; color:#BFE3FF; border-radius:10px; padding:12px">WMS › SSP12<br/>OCUPADAS: 41 | CAPACIDADE: 62<br/>LIVRES: 21 | CRITÉRIO: NEGAR</p>
+      <p>O WMS mostra espaço na rua original (ex.: <b>SSPP4.rL</b>, 22 de 36 posições). O laudo informa as <b>14 posições livres</b> e orienta utilizá-las integralmente antes de liberar híbrida.</p>
+      <p style="margin-top:10px; font-family:monospace; font-size:.85em; background:#0F172A; color:#BFE3FF; border-radius:10px; padding:12px">WMS › SSPP4.rL • CPT 21:00<br/>OCUPADAS: 22 | CAPACIDADE: 36<br/>LIVRES: 14 | CRITÉRIO: NEGAR</p>
     </div>
     <div class="card" style="border-top:5px solid #22C55E">
       <h3>✅ Híbrida Autorizada</h3>
-      <p>Rua original <b>100% ocupada</b> (ex: 20/20). O laudo libera uma <b>rua vazia da armazenagem</b>, com o endereço completo para direcionar os paletes.</p>
-      <p style="margin-top:10px; font-family:monospace; font-size:.85em; background:#0F172A; color:#BFE3FF; border-radius:10px; padding:12px">WMS › SSP55<br/>OCUPADAS: 20 | CAPACIDADE: 20<br/>HÍBRICA: BA30-4 • 28 POSIÇÕES</p>
+      <p>Rua original <b>100% ocupada</b> (ex.: <b>SBA14.rL</b>, 20/20). O laudo libera uma <b>rua vazia da armazenagem</b> (BAIO), com o endereço completo para direcionar os paletes.</p>
+      <p style="margin-top:10px; font-family:monospace; font-size:.85em; background:#0F172A; color:#BFE3FF; border-radius:10px; padding:12px">WMS › SBA14.rL • CPT 21:00<br/>OCUPADAS: 20 | CAPACIDADE: 20<br/>HÍBRICA: BAIO 5-27 • 30 POSIÇÕES</p>
     </div>
   </div>
   <p style="margin-top:20px">Cada laudo fica registrado no <b>histórico do app</b>: canalização, hora, solicitante e dados do WMS que fundamentaram a decisão.</p>
@@ -151,7 +151,7 @@ ol.passos li::before { content:counter(p); min-width:34px; height:34px; border-r
   <h2 class="titulo">Regras de Decisão do Ultron</h2>
   <div class="grid3">
     <div class="card topamarelo"><span class="ico">🔍</span><h3>1. Analisar</h3><p>Recebe a solicitação, identifica a canalização e consulta a <b>ocupação da rua no WMS</b>.</p></div>
-    <div class="card topamarelo"><span class="ico">🚫</span><h3>2. Negar se houver espaço</h3><p>Rua com capacidade 20 e 18 paletes? Existem <b>2 posições livres</b>: usar a rua original primeiro.</p></div>
+    <div class="card topamarelo"><span class="ico">🚫</span><h3>2. Negar se houver espaço</h3><p>Ex.: SG51.rL com 33 de 48 posições ocupadas? Existem <b>15 posições livres</b>: usar a rua original primeiro.</p></div>
     <div class="card topamarelo"><span class="ico">✅</span><h3>3. Abrir se cheia</h3><p>Rua 100% ocupada? Híbrida liberada em <b>rua vazia</b> (0 paletes) da armazenagem.</p></div>
   </div>
   <p style="margin-top:22px">A localização não é restrição: basta ser <span class="dest">posição existente no sistema, na armazenagem</span>.</p>
