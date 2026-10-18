@@ -164,16 +164,18 @@ footer { text-align:center; color:#B4BECD; font-size:.62em; padding:14px; letter
 
 <script>
 const CANALIZACOES = [
-  { id:'SA1.aR',   cpt:'06:00', cor:'AMARELO', docas:'264 a 269', armazem:'BAIO 5-31',   cap:20, ocup:20 },
-  { id:'SGA1.aM',  cpt:'06:00', cor:'AMARELO', docas:'251 a 263', armazem:'BAIO 5-10/12', cap:62, ocup:41 },
-  { id:'SGA6.aM',  cpt:'06:00', cor:'AMARELO', docas:'255 a 258', armazem:'BAIO 5-23/24', cap:30, ocup:30 },
-  { id:'SG51.rL',  cpt:'06:00', cor:'AMARELO', docas:'267 a 269', armazem:'BAIO 5-10/11', cap:48, ocup:33 },
-  { id:'SR514.rL', cpt:'22:00', cor:'BRANCO',  docas:'276/279',   armazem:'BAIO 5-36/38', cap:52, ocup:52 },
-  { id:'SSPP4.rL', cpt:'21:00', cor:'BRANCO',  docas:'289',       armazem:'BAIO 5-8',    cap:36, ocup:22 },
-  { id:'SSPP4.rL', cpt:'22:00', cor:'BRANCO',  docas:'288',       armazem:'BAIO 5-13',   cap:36, ocup:36 },
-  { id:'SBA14.rL', cpt:'21:00', cor:'BRANCO',  docas:'290/291',   armazem:'BAIO 5-15',   cap:28, ocup:9 }
+  { id:'SSP55', tipo:'PL', cpt:'18:00', cor:'ROXO',   docas:'277/278',   armazem:'BA30-4-24',                          cap:1, ocup:1 },
+  { id:'SBA1',  tipo:'GN', cpt:'06:00', cor:'AMARELO', docas:'259~265', armazem:'BA30-3-10~12, BA30-3-14~15',        cap:5, ocup:3 },
+  { id:'SMR1',  tipo:'GN', cpt:'10:00', cor:'AZUL',   docas:'254~260',   armazem:'BA30-4-52~57, BA30-4-59~60',        cap:8, ocup:8 },
+  { id:'SGO1',  tipo:'GN', cpt:'02:00', cor:'VERDE',  docas:'254~258',   armazem:'BA30-4-45~48, BA30-5-40',           cap:5, ocup:2 },
+  { id:'SSP23', tipo:'PL', cpt:'00:30', cor:'VERDE',  docas:'274/275',   armazem:'BA30-5-64~65',                      cap:2, ocup:2 },
+  { id:'SRS2',  tipo:'PL', cpt:'20:00', cor:'BRANCO', docas:'280~282',   armazem:'BA30-5-17~20',                      cap:4, ocup:1 },
+  { id:'SRD1',  tipo:'GN', cpt:'22:00', cor:'BRANCO', docas:'253~255',   armazem:'BA30-5-45~49',                      cap:5, ocup:4 },
+  { id:'SMS1',  tipo:'PL', cpt:'05:00', cor:'AMARELO', docas:'297~299',  armazem:'BA30-2-3, BA30-2-7~9, BA30-5-16',   cap:5, ocup:5 },
+  { id:'SSP1',  tipo:'PL', cpt:'02:00', cor:'VERDE',  docas:'285',       armazem:'BA30-1-19~20',                      cap:2, ocup:1 },
+  { id:'SSP52', tipo:'PL', cpt:'09:00', cor:'AZUL',   docas:'289',       armazem:'BA30-3-26~27',                      cap:2, ocup:1 }
 ];
-const RUAS_VAZIAS = ['BAIO 5-27 • 30 posições', 'BAIO 5-40 • 28 posições', 'BAIO 5-19 • 32 posições'];
+const RUAS_VAZIAS = ['BA30-2-50', 'BA30-2-54', 'BA30-2-58'];
 let pedidos = JSON.parse(localStorage.getItem('ultron_hist2') || 'null');
 if (!pedidos) {
   pedidos = [
@@ -189,7 +191,8 @@ function renderLista() {
     const pct = Math.round(c.ocup / c.cap * 100), cheia = c.ocup >= c.cap;
     return `<div class="card rua" onclick="abrir(${i})">
       <div class="info"><div class="nome">${c.id}</div>
-        <div class="ocup">CPT ${c.cpt} • ${c.cor} • ${c.armazem}</div>
+        <div class="ocup">${c.tipo} • CPT ${c.cpt} • ${c.cor}</div>
+        <div class="ocup" style="margin-top:2px">${c.armazem}</div>
         <div class="ocup" style="margin-top:2px">${c.ocup} de ${c.cap} posições ocupadas</div>
         <div class="barra"><i class="${cheia ? 'cheia' : ''}" style="width:${pct}%"></i></div></div>
       <span class="chip ${cheia ? 'bad' : 'ok2'}">${cheia ? 'CHEIA' : pct + '%'}</span>
@@ -202,7 +205,7 @@ function abrir(i) {
   $('lista').style.display = 'none'; $('painel').style.display = 'block';
   $('pNome').textContent = sel.id + ' — CPT ' + sel.cpt;
   $('pCpt').textContent = sel.cpt;
-  $('pCad').textContent = sel.cor + ' • DOCAS ' + sel.docas + ' • ' + sel.armazem;
+  $('pCad').textContent = sel.tipo + ' • ' + sel.cor + ' • DOCAS ' + sel.docas + ' • ' + sel.armazem;
   $('pOcup').textContent = sel.ocup; $('pCap').textContent = sel.cap; $('pLivre').textContent = sel.cap - sel.ocup;
   const pct = Math.round(sel.ocup / sel.cap * 100);
   $('pBarra').className = sel.ocup >= sel.cap ? 'cheia' : '';
@@ -227,8 +230,8 @@ function analisar() {
       pedidos.unshift({ canal: sel.id, dia, hora, autor: 'VOCÊ • DEMO', tipo: 'neg', txt: `Rua ${sel.ocup}/${sel.cap}. Negada: utilizar as ${livres} ${livres === 1 ? 'posição livre' : 'posições livres'} restantes.` });
     } else {
       const rua = RUAS_VAZIAS[Math.floor(Math.random() * RUAS_VAZIAS.length)];
-      $('okTxt').textContent = `Rua de ${sel.id} com ocupação total (${sel.cap}/${sel.cap}). Híbrida autorizada e aberta em ${rua}. Os paletes da canalização ${sel.id} podem ser direcionados para o endereço acima a partir de agora.`;
-      $('okDet').innerHTML = `WMS › ${sel.id} • CPT ${sel.cpt}<br>OCUPADAS: ${sel.ocup} | CAPACIDADE: ${sel.cap}<br>HÍBRIDA: ${rua.toUpperCase()}<br>REGISTRO: ENVIADO AO HISTÓRICO`;
+      $('okTxt').textContent = `Rua de ${sel.id} com ocupação total (${sel.cap}/${sel.cap}). Híbrida autorizada na posição ${rua} (armazenagem, rua existente no sistema). Os paletes da canalização ${sel.id} (CPT ${sel.cpt}) podem ser direcionados para esse endereço a partir de agora.`;
+      $('okDet').innerHTML = `WMS › ${sel.id} • CPT ${sel.cpt}<br>OCUPADAS: ${sel.ocup} | CAPACIDADE: ${sel.cap}<br>HÍBRIDA: ${rua}<br>REGISTRO: ENVIADO AO HISTÓRICO`;
       $('laudoOk').style.display = 'block';
       pedidos.unshift({ canal: sel.id, dia, hora, autor: 'VOCÊ • DEMO', tipo: 'ok', txt: `Rua ${sel.ocup}/${sel.cap} cheia. Híbrida aberta em ${rua}.` });
     }
