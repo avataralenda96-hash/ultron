@@ -114,6 +114,8 @@ footer { text-align:center; color:#B4BECD; font-size:.62em; padding:14px; letter
         <div><div class="v" id="pCap"></div><div class="l">CAPACIDADE</div></div>
         <div><div class="v" id="pLivre"></div><div class="l">LIVRES</div></div>
       </div>
+      <div style="margin-top:12px;background:var(--fundo);border-radius:10px;padding:10px 12px;font-size:.72em;color:#3B4666;font-weight:700;letter-spacing:.5px">
+        CPT <span id="pCpt"></span> &nbsp;•&nbsp; <span id="pCad"></span></div>
       <div class="barra" style="margin-top:14px"><i id="pBarra"></i></div>
       <button class="btn btn-soli" id="btnSoli" onclick="analisar()">SOLICITAR ANÁLISE DE RUA HÍBRIDA</button>
     </div>
@@ -162,13 +164,16 @@ footer { text-align:center; color:#B4BECD; font-size:.62em; padding:14px; letter
 
 <script>
 const CANALIZACOES = [
-  { id:'SSP55', cap:20, ocup:20 },
-  { id:'SSP12', cap:62, ocup:41 },
-  { id:'BA30-2', cap:30, ocup:30 },
-  { id:'MELI45', cap:48, ocup:33 },
-  { id:'MELI62', cap:52, ocup:52 }
+  { id:'SA1.aR',   cpt:'06:00', cor:'AMARELO', docas:'264 a 269', armazem:'BAIO 5-31',   cap:20, ocup:20 },
+  { id:'SGA1.aM',  cpt:'06:00', cor:'AMARELO', docas:'251 a 263', armazem:'BAIO 5-10/12', cap:62, ocup:41 },
+  { id:'SGA6.aM',  cpt:'06:00', cor:'AMARELO', docas:'255 a 258', armazem:'BAIO 5-23/24', cap:30, ocup:30 },
+  { id:'SG51.rL',  cpt:'06:00', cor:'AMARELO', docas:'267 a 269', armazem:'BAIO 5-10/11', cap:48, ocup:33 },
+  { id:'SR514.rL', cpt:'22:00', cor:'BRANCO',  docas:'276/279',   armazem:'BAIO 5-36/38', cap:52, ocup:52 },
+  { id:'SSPP4.rL', cpt:'21:00', cor:'BRANCO',  docas:'289',       armazem:'BAIO 5-8',    cap:36, ocup:22 },
+  { id:'SSPP4.rL', cpt:'22:00', cor:'BRANCO',  docas:'288',       armazem:'BAIO 5-13',   cap:36, ocup:36 },
+  { id:'SBA14.rL', cpt:'21:00', cor:'BRANCO',  docas:'290/291',   armazem:'BAIO 5-15',   cap:28, ocup:9 }
 ];
-const RUAS_VAZIAS = ['BA30-4 • 28 posições', 'SSP07 • 36 posições', 'BA29-1 • 30 posições'];
+const RUAS_VAZIAS = ['BAIO 5-27 • 30 posições', 'BAIO 5-40 • 28 posições', 'BAIO 5-19 • 32 posições'];
 let pedidos = JSON.parse(localStorage.getItem('ultron_hist2') || 'null');
 if (!pedidos) {
   pedidos = [
@@ -184,7 +189,8 @@ function renderLista() {
     const pct = Math.round(c.ocup / c.cap * 100), cheia = c.ocup >= c.cap;
     return `<div class="card rua" onclick="abrir(${i})">
       <div class="info"><div class="nome">${c.id}</div>
-        <div class="ocup">${c.ocup} de ${c.cap} posições ocupadas</div>
+        <div class="ocup">CPT ${c.cpt} • ${c.cor} • ${c.armazem}</div>
+        <div class="ocup" style="margin-top:2px">${c.ocup} de ${c.cap} posições ocupadas</div>
         <div class="barra"><i class="${cheia ? 'cheia' : ''}" style="width:${pct}%"></i></div></div>
       <span class="chip ${cheia ? 'bad' : 'ok2'}">${cheia ? 'CHEIA' : pct + '%'}</span>
       <svg class="seta" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
@@ -194,7 +200,9 @@ function renderLista() {
 function abrir(i) {
   sel = CANALIZACOES[i];
   $('lista').style.display = 'none'; $('painel').style.display = 'block';
-  $('pNome').textContent = sel.id;
+  $('pNome').textContent = sel.id + ' — CPT ' + sel.cpt;
+  $('pCpt').textContent = sel.cpt;
+  $('pCad').textContent = sel.cor + ' • DOCAS ' + sel.docas + ' • ' + sel.armazem;
   $('pOcup').textContent = sel.ocup; $('pCap').textContent = sel.cap; $('pLivre').textContent = sel.cap - sel.ocup;
   const pct = Math.round(sel.ocup / sel.cap * 100);
   $('pBarra').className = sel.ocup >= sel.cap ? 'cheia' : '';
@@ -213,14 +221,14 @@ function analisar() {
     const dia = agora.toLocaleDateString('pt-BR');
     if (sel.ocup < sel.cap) {
       const livres = sel.cap - sel.ocup;
-      $('negTxt').textContent = `A ocupação registrada no WMS indica ${sel.ocup} de ${sel.cap} posições. A canalização ${sel.id} ainda dispõe de ${livres} ${livres === 1 ? 'posição livre' : 'posições livres'} na rua original, que devem ser utilizadas integralmente antes da liberação de rua híbrida.`;
-      $('negDet').innerHTML = `WMS › ${sel.id}<br>OCUPADAS: ${sel.ocup} | CAPACIDADE: ${sel.cap}<br>LIVRES: ${livres} | CRITÉRIO: NEGAR`;
+      $('negTxt').textContent = `A ocupação registrada no WMS indica ${sel.ocup} de ${sel.cap} posições. A canalização ${sel.id} (CPT ${sel.cpt}, ${sel.armazem}) ainda dispõe de ${livres} ${livres === 1 ? 'posição livre' : 'posições livres'} na rua original, que devem ser utilizadas integralmente antes da liberação de rua híbrida.`;
+      $('negDet').innerHTML = `WMS › ${sel.id} • CPT ${sel.cpt}<br>OCUPADAS: ${sel.ocup} | CAPACIDADE: ${sel.cap}<br>LIVRES: ${livres} | CRITÉRIO: NEGAR`;
       $('laudoNeg').style.display = 'block';
       pedidos.unshift({ canal: sel.id, dia, hora, autor: 'VOCÊ • DEMO', tipo: 'neg', txt: `Rua ${sel.ocup}/${sel.cap}. Negada: utilizar as ${livres} ${livres === 1 ? 'posição livre' : 'posições livres'} restantes.` });
     } else {
       const rua = RUAS_VAZIAS[Math.floor(Math.random() * RUAS_VAZIAS.length)];
       $('okTxt').textContent = `Rua de ${sel.id} com ocupação total (${sel.cap}/${sel.cap}). Híbrida autorizada e aberta em ${rua}. Os paletes da canalização ${sel.id} podem ser direcionados para o endereço acima a partir de agora.`;
-      $('okDet').innerHTML = `WMS › ${sel.id}<br>OCUPADAS: ${sel.ocup} | CAPACIDADE: ${sel.cap}<br>HÍBRIDA: ${rua.toUpperCase()}<br>REGISTRO: ENVIADO AO HISTÓRICO`;
+      $('okDet').innerHTML = `WMS › ${sel.id} • CPT ${sel.cpt}<br>OCUPADAS: ${sel.ocup} | CAPACIDADE: ${sel.cap}<br>HÍBRIDA: ${rua.toUpperCase()}<br>REGISTRO: ENVIADO AO HISTÓRICO`;
       $('laudoOk').style.display = 'block';
       pedidos.unshift({ canal: sel.id, dia, hora, autor: 'VOCÊ • DEMO', tipo: 'ok', txt: `Rua ${sel.ocup}/${sel.cap} cheia. Híbrida aberta em ${rua}.` });
     }
